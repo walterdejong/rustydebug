@@ -31,3 +31,11 @@ The `debug` macro uses a `func` macro that produces the name of
 the current function. The `func` macro is public, so you may also use it.
 
     func!()
+
+
+Copyright & License
+-------------------
+Copyright 2022 by Walter de Jong <walter@heiho.net>
+This software is available as Open Source under terms described in
+the MIT license.
+
