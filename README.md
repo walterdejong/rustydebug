@@ -1,7 +1,7 @@
 rustydebug
 ==========
 
-This crate adds macros useful for print-style debugging.
+This crate adds a `debug!()` macro useful for print-style debugging in Rust.
 
     use rustydebug::debug;
 
