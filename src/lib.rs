@@ -62,8 +62,13 @@ macro_rules! debug {
 }
 
 #[allow(dead_code)]
-pub fn debug_print(filename: &str, lineno: u32, funcname: &str, msg: &String) {
+pub fn debug_print(long_filename: &str, lineno: u32, funcname: &str, msg: &String) {
     // print debug message
+
+    let mut filename = long_filename;
+    if filename.starts_with("src/") || filename.starts_with("src\\") {
+        filename = &filename[4..];
+    }
 
     let mut start_pos = funcname.find(':').unwrap_or(0);
     if start_pos > 0 {

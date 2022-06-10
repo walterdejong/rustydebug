@@ -18,14 +18,14 @@ show the source file, line number, and function.
 
 Example debug output of my eight queens solver program:
 
-    % src/main.rs:148 queens(): recursing
-    % src/main.rs:152 queens(): pop; x == 5  y == 6
-    % src/main.rs:152 queens(): pop; x == 4  y == 4
-    % src/main.rs:148 queens(): recursing
-    % src/main.rs:148 queens(): recursing
-    % src/main.rs:148 queens(): recursing
-    % src/main.rs:148 queens(): recursing
-    % src/main.rs:42 Board::show(): printing board
+    % main.rs:148 queens(): recursing
+    % main.rs:152 queens(): pop; x == 5  y == 6
+    % main.rs:152 queens(): pop; x == 4  y == 4
+    % main.rs:148 queens(): recursing
+    % main.rs:148 queens(): recursing
+    % main.rs:148 queens(): recursing
+    % main.rs:148 queens(): recursing
+    % main.rs:42 Board::show(): printing board
 
 The `debug` macro uses a `func` macro that produces the name of
 the current function. The `func` macro is public, so you may also use it.
