@@ -27,12 +27,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-use isatty::{stdout_isatty, stderr_isatty};
+use isatty::{stderr_isatty, stdout_isatty};
 use std::sync::{Mutex, Once};
 
 static mut MUTEX: Option<Mutex<i32>> = None;
 static INIT_MUTEX: Once = Once::new();
-
 
 pub fn typename<T>(_: T) -> &'static str {
     std::any::type_name::<T>()
@@ -51,7 +50,7 @@ macro_rules! func {
     () => {{
         fn f__() {}
         rustydebug::make_funcname__(rustydebug::typename(f__))
-    }}
+    }};
 }
 
 #[allow(unused_macros)]
@@ -114,7 +113,10 @@ pub fn debug_printfd(fd: i32, long_filename: &str, lineno: u32, funcname: &str, 
     let isatty = (fd == 2 && stderr_isatty()) || stdout_isatty();
     let s: String;
     if isatty {
-        s = format!(concat!("\x1b[32;1m", "% {}:{} {}():", "\x1b[0m", " {}"), filename, lineno, func, msg);
+        s = format!(
+            concat!("\x1b[32;1m", "% {}:{} {}():", "\x1b[0m", " {}"),
+            filename, lineno, func, msg
+        );
     } else {
         s = format!("% {}:{} {}(): {}", filename, lineno, func, msg);
     }
@@ -141,15 +143,11 @@ fn synchronized<'a>() -> &'a Mutex<i32> {
         we return a reference to the Mutex with a guaranteed lifetime
     */
 
-    INIT_MUTEX.call_once(|| {
-        unsafe {
-            MUTEX = Some(Mutex::new(0));
-        }
+    INIT_MUTEX.call_once(|| unsafe {
+        MUTEX = Some(Mutex::new(0));
     });
     // return "static" ref to global mutex
-    unsafe {
-        MUTEX.as_ref().unwrap()
-    }
+    unsafe { MUTEX.as_ref().unwrap() }
 }
 
 // EOB
