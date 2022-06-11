@@ -42,7 +42,7 @@ For that you can use `edebug!()`:
 The `debug` macro uses a `func` macro that produces the name of
 the current function. The `func` macro is public, so you may also use it.
 
-    func!()
+    let funcname = func!();
 
 
 Copyright & License
