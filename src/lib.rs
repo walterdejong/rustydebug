@@ -28,6 +28,11 @@ SOFTWARE.
 */
 
 use isatty::{stdout_isatty, stderr_isatty};
+use std::sync::{Mutex, Once};
+
+static mut MUTEX: Option<Mutex<i32>> = None;
+static INIT_MUTEX: Once = Once::new();
+
 
 pub fn typename<T>(_: T) -> &'static str {
     std::any::type_name::<T>()
@@ -114,10 +119,31 @@ pub fn debug_printfd(fd: i32, long_filename: &str, lineno: u32, funcname: &str, 
         s = format!("% {}:{} {}(): {}", filename, lineno, func, msg);
     }
 
-    if fd == 2 {
-        eprintln!("{}", s);
-    } else {
-        println!("{}", s);
+    {
+        // synchronize multithreaded output
+        let _guard = *synchronized().lock().unwrap();
+
+        if fd == 2 {
+            eprintln!("{}", s);
+        } else {
+            println!("{}", s);
+        }
+    }
+}
+
+#[doc(hidden)]
+fn synchronized<'a>() -> &'a Mutex<i32> {
+    // this function is an accessor for a global mutex
+    // having a global mutex in Rust is somewhat difficult to pull of ...
+
+    INIT_MUTEX.call_once(|| {
+        unsafe {
+            MUTEX = Some(Mutex::new(0));
+        }
+    });
+    // return "static" ref to global mutex
+    unsafe {
+        MUTEX.as_ref().unwrap()
     }
 }
 

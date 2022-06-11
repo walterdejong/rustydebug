@@ -38,6 +38,9 @@ For that you can use `edebug!()`:
 
     edebug!("message to stderr");
 
+The output is synchronized across threads so that multithreaded programs
+do not present mixed up debug messages.
+
 
 Other functionality in rustydebug
 ---------------------------------
