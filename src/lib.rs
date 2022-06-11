@@ -62,7 +62,7 @@ macro_rules! debug {
 }
 
 #[allow(dead_code)]
-pub fn debug_print(long_filename: &str, lineno: u32, funcname: &str, msg: &String) {
+pub fn debug_print(long_filename: &str, lineno: u32, funcname: &str, msg: &str) {
     // print debug message
 
     let mut filename = long_filename;
