@@ -29,16 +29,24 @@ SOFTWARE.
 
 use isatty::{stdout_isatty, stderr_isatty};
 
+pub fn typename<T>(_: T) -> &'static str {
+    std::any::type_name::<T>()
+}
+
+#[allow(dead_code)]
+#[doc(hidden)]
+pub fn make_funcname__(funcname: &'static str) -> &'static str {
+    // funcname will end with "::f__" because that's our sentinel function
+    assert!(funcname.len() > 5);
+    &funcname[..funcname.len() - 5]
+}
+
 #[allow(unused_macros)]
 #[macro_export]
 macro_rules! func {
     () => {{
-        fn f() {}
-        fn type_name_of<T>(_: T) -> &'static str {
-            std::any::type_name::<T>()
-        }
-        let name = type_name_of(f);
-        name
+        fn f__() {}
+        rustydebug::make_funcname__(rustydebug::typename(f__))
     }}
 }
 
@@ -93,11 +101,7 @@ pub fn debug_printfd(fd: i32, long_filename: &str, lineno: u32, funcname: &str, 
     if start_pos > 0 {
         start_pos += 2;
     }
-    let mut end_pos = funcname.rfind(':').unwrap_or(funcname.len());
-    if end_pos > 0 && end_pos < funcname.len() {
-        end_pos -= 1;
-    }
-    let func = &funcname[start_pos..end_pos];
+    let func = &funcname[start_pos..];
 
     /*
         Note: nix::unistd::isatty(fd) is a UNIX thing
