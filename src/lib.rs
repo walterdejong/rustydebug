@@ -133,8 +133,13 @@ pub fn debug_printfd(fd: i32, long_filename: &str, lineno: u32, funcname: &str, 
 
 #[doc(hidden)]
 fn synchronized<'a>() -> &'a Mutex<i32> {
-    // this function is an accessor for a global mutex
-    // having a global mutex in Rust is somewhat difficult to pull of ...
+    /*
+        this function is an accessor for a global mutex
+
+        the static Mutex can not be initialized directly, so
+        we use an Option<Mutex> in combination with a Once to initialize it
+        we return a reference to the Mutex with a guaranteed lifetime
+    */
 
     INIT_MUTEX.call_once(|| {
         unsafe {
