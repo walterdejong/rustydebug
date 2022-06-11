@@ -27,7 +27,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-use isatty::stdout_isatty;
+use isatty::{stdout_isatty, stderr_isatty};
 
 #[allow(unused_macros)]
 #[macro_export]
@@ -38,7 +38,7 @@ macro_rules! func {
             std::any::type_name::<T>()
         }
         let name = type_name_of(f);
-        &name
+        name
     }}
 }
 
@@ -47,22 +47,41 @@ macro_rules! func {
 macro_rules! debug {
     () => {
         #[cfg(debug_assertions)]
-        rustydebug::debug_print(file!(), line!(), rustydebug::func!(), &String::new())
+        rustydebug::debug_printfd(1, file!(), line!(), rustydebug::func!(), &String::new())
     };
 
     ($msg: expr) => {
         #[cfg(debug_assertions)]
-        rustydebug::debug_print(file!(), line!(), rustydebug::func!(), &$msg.to_string())
+        rustydebug::debug_printfd(1, file!(), line!(), rustydebug::func!(), &$msg.to_string())
     };
 
     ($fmt: expr, $($args: tt)*) => {
         #[cfg(debug_assertions)]
-        rustydebug::debug_print(file!(), line!(), rustydebug::func!(), &format!($fmt, $($args)*))
+        rustydebug::debug_printfd(1, file!(), line!(), rustydebug::func!(), &format!($fmt, $($args)*))
+    };
+}
+
+#[allow(unused_macros)]
+#[macro_export]
+macro_rules! edebug {
+    () => {
+        #[cfg(debug_assertions)]
+        rustydebug::debug_printfd(2, file!(), line!(), rustydebug::func!(), &String::new())
+    };
+
+    ($msg: expr) => {
+        #[cfg(debug_assertions)]
+        rustydebug::debug_printfd(2, file!(), line!(), rustydebug::func!(), &$msg.to_string())
+    };
+
+    ($fmt: expr, $($args: tt)*) => {
+        #[cfg(debug_assertions)]
+        rustydebug::debug_printfd(2, file!(), line!(), rustydebug::func!(), &format!($fmt, $($args)*))
     };
 }
 
 #[allow(dead_code)]
-pub fn debug_print(long_filename: &str, lineno: u32, funcname: &str, msg: &str) {
+pub fn debug_printfd(fd: i32, long_filename: &str, lineno: u32, funcname: &str, msg: &str) {
     // print debug message
 
     let mut filename = long_filename;
@@ -80,11 +99,22 @@ pub fn debug_print(long_filename: &str, lineno: u32, funcname: &str, msg: &str) 
     }
     let func = &funcname[start_pos..end_pos];
 
-    if stdout_isatty() {
-        // output color codes
-        println!(concat!("\x1b[32;1m", "% {}:{} {}():", "\x1b[0m", " {}"), filename, lineno, func, msg);
+    /*
+        Note: nix::unistd::isatty(fd) is a UNIX thing
+        while stdout_isatty() / stderr_isatty() is more portable
+    */
+    let isatty = (fd == 2 && stderr_isatty()) || stdout_isatty();
+    let s: String;
+    if isatty {
+        s = format!(concat!("\x1b[32;1m", "% {}:{} {}():", "\x1b[0m", " {}"), filename, lineno, func, msg);
     } else {
-        println!("% {}:{} {}(): {}", filename, lineno, func, msg);
+        s = format!("% {}:{} {}(): {}", filename, lineno, func, msg);
+    }
+
+    if fd == 2 {
+        eprintln!("{}", s);
+    } else {
+        println!("{}", s);
     }
 }
 

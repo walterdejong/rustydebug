@@ -8,6 +8,7 @@ The macro works much the same as `println!()`:
 
     debug!("plain string");
     debug!("the value of x == {}", x);      // println!() style
+    debug!("here we have s == {:?}", &s);
     debug!();                               // empty debug line
 
 Unlike `dbg!`, the `debug` macro produces _no_ code in release builds.
@@ -28,6 +29,16 @@ Example debug output of my eight queens solver program:
     % main.rs:148 queens(): recursing
     % main.rs:42 Board::show(): printing board
 
+The debug output is written to stdout. This is on purpose so that the
+debug output is 'synchronized' with the regular output of the program.
+Sometimes it is convenient to have the debug output appear on stderr instead.
+For that you can use `edebug!()`:
+
+    use rustydebug::edebug;
+
+    edebug!("message to stderr");
+
+
 The `debug` macro uses a `func` macro that produces the name of
 the current function. The `func` macro is public, so you may also use it.
 
@@ -39,4 +50,3 @@ Copyright & License
 Copyright 2022 by Walter de Jong <walter@heiho.net>
 This software is available as Open Source under terms described in
 the MIT license.
-
