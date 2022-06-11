@@ -55,12 +55,12 @@ macro_rules! func {
 macro_rules! debug {
     () => {
         #[cfg(debug_assertions)]
-        rustydebug::debug_printfd(1, file!(), line!(), rustydebug::func!(), &String::new())
+        rustydebug::debug_printfd(1, file!(), line!(), rustydebug::func!(), "")
     };
 
     ($msg: expr) => {
         #[cfg(debug_assertions)]
-        rustydebug::debug_printfd(1, file!(), line!(), rustydebug::func!(), &$msg.to_string())
+        rustydebug::debug_printfd(1, file!(), line!(), rustydebug::func!(), $msg)
     };
 
     ($fmt: expr, $($args: tt)*) => {
@@ -74,12 +74,12 @@ macro_rules! debug {
 macro_rules! edebug {
     () => {
         #[cfg(debug_assertions)]
-        rustydebug::debug_printfd(2, file!(), line!(), rustydebug::func!(), &String::new())
+        rustydebug::debug_printfd(2, file!(), line!(), rustydebug::func!(), "")
     };
 
     ($msg: expr) => {
         #[cfg(debug_assertions)]
-        rustydebug::debug_printfd(2, file!(), line!(), rustydebug::func!(), &$msg.to_string())
+        rustydebug::debug_printfd(2, file!(), line!(), rustydebug::func!(), $msg)
     };
 
     ($fmt: expr, $($args: tt)*) => {
