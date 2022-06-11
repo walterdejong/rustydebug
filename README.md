@@ -42,8 +42,8 @@ For that you can use `edebug!()`:
 Other functionality in rustydebug
 ---------------------------------
 
-* `typename(x)` returns the type of x as a static &str
-* `func!()` gives the current function name as a static &str
+* `typename(x)` returns the type of `x` as `&'static str`
+* `func!()` gives the current function name as `&'static str`
 
 
 Copyright & License
