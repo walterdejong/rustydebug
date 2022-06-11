@@ -39,10 +39,11 @@ For that you can use `edebug!()`:
     edebug!("message to stderr");
 
 
-The `debug` macro uses a `func` macro that produces the name of
-the current function. The `func` macro is public, so you may also use it.
+Other functionality in rustydebug
+---------------------------------
 
-    let funcname = func!();
+* `typename(x)` returns the type of x as a static &str
+* `func!()` gives the current function name as a static &str
 
 
 Copyright & License
