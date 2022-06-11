@@ -33,7 +33,6 @@ pub fn typename<T>(_: T) -> &'static str {
     std::any::type_name::<T>()
 }
 
-#[allow(dead_code)]
 #[doc(hidden)]
 pub fn make_funcname__(funcname: &'static str) -> &'static str {
     // funcname will end with "::f__" because that's our sentinel function
@@ -88,7 +87,7 @@ macro_rules! edebug {
     };
 }
 
-#[allow(dead_code)]
+#[doc(hidden)]
 pub fn debug_printfd(fd: i32, long_filename: &str, lineno: u32, funcname: &str, msg: &str) {
     // print debug message
 
